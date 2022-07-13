@@ -5,7 +5,7 @@ import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORT
 
 import com.example.demo.domain.Post;
 import com.example.demo.repo.PostRepository;
-import java.util.Optional;
+import com.example.demo.repo.PostWithEmbeddedUUIDRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +19,30 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureTestDatabase
 @Transactional(propagation = NOT_SUPPORTED)
 class PostServiceTest {
+
   @Autowired
   private PostRepository postRepository;
+  @Autowired
+  private PostWithEmbeddedUUIDRepository postWithEmbeddedUUIDRepository;
   @Autowired
   private PostService postService;
 
   @TestConfiguration
   static class Config {
+
     @Bean
-    public PostService postService(PostRepository postRepository) {
-      return new PostService(postRepository);
+    public PostService postService(
+        PostRepository postRepository,
+        PostWithEmbeddedUUIDRepository postWithEmbeddedUUIDRepository
+    ) {
+      return new PostService(postRepository, postWithEmbeddedUUIDRepository);
     }
   }
 
   @BeforeEach
   void beforeEach() {
     postRepository.deleteAll();
+    postWithEmbeddedUUIDRepository.deleteAll();
   }
 
   @Test
@@ -47,6 +55,11 @@ class PostServiceTest {
 
     final var changedPost = postRepository.findById(post.getId()).orElseThrow();
     assertEquals("newTitle", changedPost.getTitle(), "Unexpected post title");
+  }
+
+  @Test
+  void shouldCreatePostWithUUID() {
+    postService.createPostWithUUID("some_title");
   }
 
   @Test
