@@ -2,6 +2,7 @@ package com.example.demo.domain;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import com.example.demo.domain.event.DomainEventPublisher;
 import com.example.demo.domain.event.PostNameChanged;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,12 +20,7 @@ import org.springframework.context.ApplicationEventPublisher;
 @Table(name = "post")
 @Setter
 @Getter
-@Configurable(autowire = Autowire.BY_TYPE)
 public class Post {
-  @Autowired
-  @Transient
-  private ApplicationEventPublisher eventPublisher;
-
   @Id
   @GeneratedValue(strategy = IDENTITY)
   public Long id;
@@ -33,6 +29,6 @@ public class Post {
 
   public void changeTitle(String title) {
     this.title = title;
-    eventPublisher.publishEvent(new PostNameChanged(id));
+    DomainEventPublisher.publish(new PostNameChanged(id));
   }
 }
