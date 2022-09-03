@@ -1,11 +1,17 @@
 package com.example.demo.domain;
 
+import static javax.persistence.CascadeType.PERSIST;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +29,14 @@ public class PostWithEmbeddedUUID {
   @EmbeddedId
   public PostID id;
   private String title;
+
+  @OneToMany(mappedBy = "post", cascade = PERSIST)
+  private List<Comment> comments = new ArrayList<>();
+
+  public void addComment(Comment comment) {
+    comment.setPost(this);
+    comments.add(comment);
+  }
 
   public static PostWithEmbeddedUUID newPost() {
     final var post = new PostWithEmbeddedUUID();

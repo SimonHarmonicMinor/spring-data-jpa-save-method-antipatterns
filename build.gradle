@@ -19,15 +19,25 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('testcontainersVersion', '1.17.2')
+}
+
 dependencies {
+	implementation "net.ttddyy:datasource-proxy:1.8"
 	implementation 'org.springframework:spring-instrument:5.3.21'
 	springinstrument "org.springframework:spring-instrument:5.3.21"
 	implementation configurations.springinstrument.dependencies
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation platform("org.testcontainers:testcontainers-bom:${testcontainersVersion}")
+	testImplementation "org.testcontainers:postgresql"
+	testImplementation "org.testcontainers:junit-jupiter"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
