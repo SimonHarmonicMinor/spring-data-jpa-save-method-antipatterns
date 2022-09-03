@@ -1,6 +1,5 @@
 package com.example.demo.post;
 
-import com.example.demo.domain.Comment;
 import com.example.demo.domain.Post;
 import com.example.demo.domain.PostWithEmbeddedUUID;
 import com.example.demo.domain.event.PostNameChanged;
@@ -46,8 +45,7 @@ public class PostService {
   @Transactional
   public void createPostWithUUID(String title) {
     final var post = PostWithEmbeddedUUID.newPost();
-    post.setTitle(title + "i");
-    post.addComment(new Comment());
+    post.setTitle(title);
     postWithEmbeddedUUIDRepository.save(post);
   }
 
